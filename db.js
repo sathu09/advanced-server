@@ -1,4 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+
+console.log("📁 Using database at:", path.resolve('database.sqlite'));
 
 const db = new sqlite3.Database("./database/database.db", (err) => {
     if (err) {
