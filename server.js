@@ -1,11 +1,10 @@
-app.use(express.json());
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto"); // For API key generation
 const db = require("./db"); // Import the database connection
 require("dotenv").config();
-
+app.use(express.json());
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON requests
