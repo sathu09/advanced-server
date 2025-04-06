@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Register from './components/Register';
-import Login from './components/Login';
+import React, { useState, useEffect } from "react";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import CountryFetcher from "./components/CountryFetcher"; // Import the new component
 
 function App() {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState("");
 
-  // This useEffect will save the apiKey to localStorage when it's updated
   useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem('apiKey', apiKey);
-    }
-  }, [apiKey]);
-
-  // This useEffect will load the apiKey from localStorage when the component mounts
-  useEffect(() => {
-    const storedApiKey = localStorage.getItem('apiKey');
+    const storedApiKey = localStorage.getItem("apiKey");
     if (storedApiKey) {
       setApiKey(storedApiKey);
     }
@@ -26,7 +19,8 @@ function App() {
       {apiKey ? (
         <div>
           <h2>Logged In with API Key: {apiKey}</h2>
-          {/* You can add other features here */}
+          {/* Show the CountryFetcher component only if user is logged in */}
+          <CountryFetcher apiKey={apiKey} />
         </div>
       ) : (
         <div>

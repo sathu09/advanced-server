@@ -7,15 +7,15 @@ const db = require("./db");
 require("dotenv").config();
 
 const cors = require("cors");
-app.use(cors());
-
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 const PORT = 3000;
 const SECRET_KEY = "your_secret_key";
 
-// ✅ Middleware for API Key Authentication using SQLite
+// Middleware for API Key Authentication using SQLite
 const authenticate = (req, res, next) => {
     const apiKey = req.header("x-api-key") || req.query.apiKey;
 
@@ -32,7 +32,7 @@ const authenticate = (req, res, next) => {
     });
 };
 
-// 🔹 Register Route (Public)
+// Register Route (Public)
 app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -54,7 +54,7 @@ app.post("/register", async (req, res) => {
     );
 });
 
-// 🔹 Login Route (Public)
+// Login Route (Public)
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -78,9 +78,9 @@ app.post("/login", (req, res) => {
     });
 });
 
-// 🔐 Protected Routes
+// Protected Routes
 
-// 🔹 Fetch Country Data from External API and Save to DB
+// Fetch Country Data from External API and Save to DB
 app.get("/country/:name", authenticate, async (req, res) => {
     try {
         const { name } = req.params;
@@ -122,7 +122,7 @@ app.get("/country/:name", authenticate, async (req, res) => {
     }
 });
 
-// 🔹 Get All Saved Countries from DB
+// Get All Saved Countries from DB
 app.get("/countries", authenticate, (req, res) => {
     const query = "SELECT * FROM countries";
     db.all(query, [], (err, rows) => {
@@ -134,7 +134,7 @@ app.get("/countries", authenticate, (req, res) => {
     });
 });
 
-// 🔹 Delete a Country by Name
+//Delete a Country by Name
 app.delete("/countries/:name", authenticate, (req, res) => {
     const { name } = req.params;
     db.run("DELETE FROM countries WHERE name = ?", [name], function(err) {
@@ -145,7 +145,7 @@ app.delete("/countries/:name", authenticate, (req, res) => {
     });
 });
 
-// 🔹 Log routes before server starts
+// Log routes before server starts
 console.log("📋 Registered routes:");
 if (app._router && app._router.stack) {
     const routes = app._router.stack
@@ -156,7 +156,7 @@ if (app._router && app._router.stack) {
     console.warn("⚠️ Could not read registered routes.");
 }
 
-// 🔹 Start the server
+// Start the server
 app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });
