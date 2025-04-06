@@ -12,9 +12,10 @@ app.use(express.json());
 const PORT = 3000;
 const SECRET_KEY = "your_secret_key";
 
-// 🔹 Middleware for API Key Authentication
+// ✅ Middleware for API Key Authentication using SQLite
 const authenticate = (req, res, next) => {
-    const apiKey = req.header("x-api-key");
+    const apiKey = req.header("x-api-key") || req.query.apiKey;
+
     if (!apiKey) {
         return res.status(403).json({ error: "API key required" });
     }
@@ -28,7 +29,7 @@ const authenticate = (req, res, next) => {
     });
 };
 
-// 🔹 Register Route
+// 🔹 Register Route (Public)
 app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -50,7 +51,7 @@ app.post("/register", async (req, res) => {
     );
 });
 
-// 🔹 Login Route
+// 🔹 Login Route (Public)
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -66,7 +67,6 @@ app.post("/login", (req, res) => {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        // Generate JWT token
         const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY, {
             expiresIn: "1h",
         });
@@ -75,7 +75,9 @@ app.post("/login", (req, res) => {
     });
 });
 
-// 🔹 Fetch Country Data Route (Authenticated)
+// 🔐 Protected Routes
+
+// 🔹 Fetch Country Data from External API and Save to DB
 app.get("/country/:name", authenticate, async (req, res) => {
     try {
         const { name } = req.params;
@@ -86,18 +88,58 @@ app.get("/country/:name", authenticate, async (req, res) => {
             name: country.name.common,
             currency: country.currencies ? Object.keys(country.currencies)[0] : "N/A",
             capital: country.capital ? country.capital[0] : "N/A",
-            languages: country.languages ? Object.values(country.languages) : "N/A",
+            languages: country.languages ? Object.values(country.languages).join(", ") : "N/A",
             flag: country.flags.png,
         };
+
+        // Save to local SQLite DB
+        const insertQuery = `
+            INSERT OR IGNORE INTO countries (name, currency, capital, languages, flag)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+        db.run(insertQuery, [
+            countryInfo.name,
+            countryInfo.currency,
+            countryInfo.capital,
+            countryInfo.languages,
+            countryInfo.flag
+        ], (err) => {
+            if (err) {
+                console.error("Failed to insert country into DB:", err.message);
+            }
+        });
 
         res.json(countryInfo);
     } catch (error) {
         console.error("API Fetch Error:", error.response?.data || error.message);
-        res.status(500).json({ 
+        res.status(500).json({
             error: "Could not fetch country data",
-            details: error.response?.data || error.message 
+            details: error.response?.data || error.message
         });
     }
+});
+
+// 🔹 Get All Saved Countries from DB
+app.get("/countries", authenticate, (req, res) => {
+    const query = "SELECT * FROM countries";
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error("Error retrieving countries:", err);
+            return res.status(500).json({ error: "Failed to get countries" });
+        }
+        res.json({ countries: rows });
+    });
+});
+
+// 🔹 Delete a Country by Name
+app.delete("/countries/:name", authenticate, (req, res) => {
+    const { name } = req.params;
+    db.run("DELETE FROM countries WHERE name = ?", [name], function(err) {
+        if (err) {
+            return res.status(500).json({ error: "Failed to delete country" });
+        }
+        res.json({ message: `${name} deleted successfully` });
+    });
 });
 
 // 🔹 Log routes before server starts
