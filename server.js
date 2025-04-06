@@ -6,6 +6,9 @@ const axios = require("axios");
 const db = require("./db");
 require("dotenv").config();
 
+const cors = require("cors");
+app.use(cors());
+
 const app = express();
 app.use(express.json());
 
