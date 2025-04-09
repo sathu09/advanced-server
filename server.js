@@ -45,7 +45,7 @@ const authenticate = (req, res, next) => {
 };
 
 
-// Register Route (Public)
+// Register Route 
 app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -67,7 +67,7 @@ app.post("/register", async (req, res) => {
     );
 });
 
-// Login Route (Public)
+// Login Route 
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -168,6 +168,8 @@ if (app._router && app._router.stack) {
 } else {
     console.warn("Could not read registered routes.");
 }
+
+
 
 // Start the server
 app.listen(PORT, () => {

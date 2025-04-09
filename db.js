@@ -1,7 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
-// Path info
+
 console.log("Using database at:", path.resolve("database/database.db"));
 
 // Connect to DB
@@ -13,9 +13,9 @@ const db = new sqlite3.Database("./database/database.db", (err) => {
     }
 });
 
-// Create tables if not exist
+// Create tables if exist
 db.serialize(() => {
-    // 👤 Users Table with usage tracking
+    // Users Table usage tracking
     db.run(
         `CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
