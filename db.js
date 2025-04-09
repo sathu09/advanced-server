@@ -1,38 +1,40 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
-// 🗂 Path info
+// Path info
 console.log("Using database at:", path.resolve("database/database.db"));
 
-// 📦 Connect to DB
+// Connect to DB
 const db = new sqlite3.Database("./database/database.db", (err) => {
     if (err) {
-        console.error("❌ Error connecting to database:", err.message);
+        console.error("Error connecting to database:", err.message);
     } else {
-        console.log("✅ Connected to the SQLite database.");
+        console.log("Connected to the SQLite database.");
     }
 });
 
-// 🔧 Create tables if not exist
+// Create tables if not exist
 db.serialize(() => {
-    // 👤 Users Table
+    // 👤 Users Table with usage tracking
     db.run(
         `CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password TEXT,
-            api_key TEXT UNIQUE
+            api_key TEXT UNIQUE,
+            usage_count INTEGER DEFAULT 0,
+            last_used TEXT
         )`,
         (err) => {
             if (err) {
-                console.error("❌ Error creating users table:", err.message);
+                console.error("Error creating users table:", err.message);
             } else {
-                console.log("✅ Users table is ready.");
+                console.log("Users table is ready (with usage tracking).");
             }
         }
     );
 
-    // 🌍 Countries Table
+    // Countries Table
     db.run(
         `CREATE TABLE IF NOT EXISTS countries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,9 +46,9 @@ db.serialize(() => {
         )`,
         (err) => {
             if (err) {
-                console.error("❌ Error creating countries table:", err.message);
+                console.error("Error creating countries table:", err.message);
             } else {
-                console.log("✅ Countries table is ready.");
+                console.log("Countries table is ready.");
             }
         }
     );

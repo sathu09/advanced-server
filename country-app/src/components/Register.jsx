@@ -38,10 +38,11 @@ function Register() {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "15px", border: "3px solid #4B0082", paddingBottom: "16px", borderRadius: "18px", marginLeft: "250px", fontFamily: "Times New Roman",textAlign: "center"}}>
       <h2>Register</h2>
+      <h2>If you are the new user please register the system</h2>
       <form onSubmit={handleRegister}>
-        <div>
+        <div style={{paddingBottom:"13px", letterSpacing:"2px", fontWeight: "bold"}}>
           <label htmlFor="username">Username</label>
           <input
             type="text"
@@ -51,7 +52,7 @@ function Register() {
             required
           />
         </div>
-        <div>
+        <div style={{paddingBottom:"13px",letterSpacing:"2px", fontWeight: "bold"}}>
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -61,7 +62,7 @@ function Register() {
             required
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit" style={{ marginTop: "5px", padding: "10px", borderRadius: "18px",border: "3px solid rgb(150, 43, 90)",  fontFamily: "Times New Roman", textAlign: "center"}}>Register</button>
       </form>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}

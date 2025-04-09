@@ -20,27 +20,28 @@ function Login({ setApiKey }) {
       const data = await response.json();
 
       if (response.ok) {
-        // On successful login, set the API key
+        // On successful login API key
         setApiKey(data.api_key);
       } else {
-        // On error, show the error message
+        //show the error message
         setError(data.error);
       }
     } catch (err) {
       // Log the error to console for debugging
       console.error('Login Error:', err);
 
-      // Provide a more detailed error message to the user
+      // Provide error message to the user
       setError('Login failed, please try again. Error: ' + (err.message || 'Unknown error'));
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div style={{ marginTop: "15px", paddingBottom: "15px", borderRadius: "18px", border:"5px solid", marginLeft: "250px", fontFamily: "Times New Roman", textAlign: "center"}}>
+      <h2 >Login</h2>
+      <h2>Welcome Back Enter Your Username & Password</h2>
       <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">Username</label>
+        <div style={{paddingBottom:"13px",letterSpacing:"2px", fontWeight: "bold"}}>
+          <label htmlFor="username" >Username</label>
           <input
             type="text"
             id="username"
@@ -49,7 +50,7 @@ function Login({ setApiKey }) {
             required
           />
         </div>
-        <div>
+        <div style={{paddingBottom:"13px",letterSpacing:"2px", fontWeight: "bold"}}>
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -59,7 +60,7 @@ function Login({ setApiKey }) {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" style={{ marginTop: "3px", padding: "10px", borderRadius: "18px",border: "2px solid rgb(111, 17, 63)",  fontFamily: "Times New Roman", textAlign: "center"}}>Login</button>
       </form>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}

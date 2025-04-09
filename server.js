@@ -15,7 +15,7 @@ app.use(express.json());
 const PORT = 3000;
 const SECRET_KEY = "your_secret_key";
 
-// Middleware for API Key Authentication using SQLite
+// Middleware for API Key Authentication + Usage Tracking
 const authenticate = (req, res, next) => {
     const apiKey = req.header("x-api-key") || req.query.apiKey;
 
@@ -27,10 +27,23 @@ const authenticate = (req, res, next) => {
         if (err) return res.status(500).json({ error: "Database error" });
         if (!user) return res.status(403).json({ error: "Invalid API key" });
 
-        req.user = user; // Attach user info to request
+        //Track API time use
+        const now = new Date().toISOString();
+        db.run(
+            `UPDATE users SET usage_count = COALESCE(usage_count, 0) + 1, last_used = ? WHERE id = ?`,
+            [now, user.id],
+            (updateErr) => {
+                if (updateErr) {
+                    console.error("Failed to update usage stats:", updateErr.message);
+                }
+            }
+        );
+
+        req.user = user;
         next();
     });
 };
+
 
 // Register Route (Public)
 app.post("/register", async (req, res) => {
@@ -146,17 +159,17 @@ app.delete("/countries/:name", authenticate, (req, res) => {
 });
 
 // Log routes before server starts
-console.log("📋 Registered routes:");
+console.log("Registered routes:");
 if (app._router && app._router.stack) {
     const routes = app._router.stack
         .filter(r => r.route && r.route.path)
         .map(r => r.route.path);
     console.log(routes);
 } else {
-    console.warn("⚠️ Could not read registered routes.");
+    console.warn("Could not read registered routes.");
 }
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
