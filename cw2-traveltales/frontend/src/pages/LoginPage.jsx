@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -13,10 +15,17 @@ const LoginPage = () => {
         email,
         password,
       });
-      setMessage('Login successful');
-      console.log('JWT Token:', res.data.token); // Store token as needed
+
+      const token = res.data.token;
+      if (token) {
+        localStorage.setItem('token', token);
+        setMessage('Login successful!');
+        navigate('/'); // Redirect to homepage
+      } else {
+        setMessage('Invalid response from server');
+      }
     } catch (err) {
-      setMessage('Login failed: ' + err.response?.data?.message || err.message);
+      setMessage('Login failed: ' + (err.response?.data?.message || err.message));
     }
   };
 

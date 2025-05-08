@@ -4,6 +4,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Navbar from './components/Navbar';
+import CreateBlogPage from './pages/CreateBlogPage';
+import BlogListPage from './pages/BlogListPage';
+import ProtectedRoute from './components/ProtectedRoute'; // ⬅️ Import added
 
 function App() {
   return (
@@ -13,6 +16,17 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/blogs" element={<BlogListPage />} />
+        
+        {/* 🔒 Protected route */}
+        <Route
+          path="/create"
+          element={
+            <ProtectedRoute>
+              <CreateBlogPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
