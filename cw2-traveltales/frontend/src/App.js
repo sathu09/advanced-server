@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import Navbar from './components/Navbar';
 import CreateBlogPage from './pages/CreateBlogPage';
 import BlogListPage from './pages/BlogListPage';
-import ProtectedRoute from './components/ProtectedRoute'; // ⬅️ Import added
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -17,8 +17,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/blogs" element={<BlogListPage />} />
-        
-        {/* 🔒 Protected route */}
         <Route
           path="/create"
           element={

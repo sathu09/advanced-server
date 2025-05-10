@@ -1,10 +1,8 @@
+// src/pages/HomePage.jsx
 import React from 'react';
 
-const HomePage = () => (
-  <div>
-    <h1>Welcome to TravelTales</h1>
-    <p>Discover stories from around the world!</p>
-  </div>
-);
+const HomePage = () => {
+  return <h2>Welcome to TravelTales!</h2>;
+};
 
 export default HomePage;
