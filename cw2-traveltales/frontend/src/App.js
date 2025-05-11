@@ -16,7 +16,16 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/blogs" element={<BlogListPage />} />
+        
+        {/* 🔐 Protected routes */}
+        <Route
+          path="/blogs"
+          element={
+            <ProtectedRoute>
+              <BlogListPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/create"
           element={

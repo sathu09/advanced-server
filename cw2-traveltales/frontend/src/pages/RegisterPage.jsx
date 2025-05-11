@@ -10,16 +10,18 @@ const RegisterPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/register', {
+      const res = await axios.post('http://localhost:5002/api/register', {
         email,
-        username,
         password,
       });
-      setMessage('Registration successful. You can now log in.');
+      setMessage('Registration successful ✅');
+      console.log('Token:', res.data.token);
     } catch (err) {
-      setMessage('Registration failed: ' + err.response?.data?.message || err.message);
+      console.error('Registration error:', err); // 🔍 Add this
+      setMessage('Registration failed: ' + (err.response?.data?.message || err.message));
     }
   };
+  
 
   return (
     <div>

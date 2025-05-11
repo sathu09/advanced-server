@@ -1,65 +1,51 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CreateBlogPage = () => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [country, setCountry] = useState("");
-  const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setMessage("You must be logged in to post a blog.");
-      return;
-    }
-
     try {
+      const token = localStorage.getItem('token');
       await axios.post(
-        "http://localhost:5000/api/blogs",
-        { title, content, country },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        'http://localhost:5002/api/posts', // 👈 corrected endpoint
+        { title, content },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessage("Blog post created successfully!");
-      navigate("/blogs");
+
+      
+      navigate('/blogs'); // ✅ Redirect to blog list
     } catch (err) {
-      setMessage("Failed to create blog: " + (err.response?.data?.message || err.message));
+      alert('Failed to create blog: ' + (err.response?.data?.message || err.message));
     }
   };
 
   return (
-    <div>
-      <h2>Create a Travel Blog</h2>
-      <form onSubmit={handleSubmit}>
+    <div style={{ padding: '2rem' }}>
+      <h2>Create New Blog Post</h2>
+      <form onSubmit={handleCreate}>
         <input
           type="text"
           placeholder="Blog Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          required /><br />
-        <input
-          type="text"
-          placeholder="Country Visited"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          required /><br />
+          required
+          style={{ display: 'block', width: '100%', marginBottom: '1rem' }}
+        />
         <textarea
-          placeholder="Your travel experience..."
+          placeholder="Write your content here..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows="5"
-          required /><br />
-        <button type="submit">Post Blog</button>
+          required
+          style={{ display: 'block', width: '100%', marginBottom: '1rem' }}
+        ></textarea>
+        <button type="submit">Publish</button>
       </form>
-      <p>{message}</p>
     </div>
   );
 };
